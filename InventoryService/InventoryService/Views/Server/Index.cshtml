@@ -1,0 +1,169 @@
+﻿@model InventoryService.Models.ServerList
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <h2>
+        Server Inventory
+    </h2>
+
+    <!--
+    <input id="AddHost" type="button" onclick="" class="btn btn-primary" value="Add Host" />
+        -->
+
+    <button type="button" class="btn btn-primary btn-link"
+            onclick="addHost()">
+        Add Host
+    </button>
+    <script>
+        function addHost() {
+            window.open("http://localhost:53164/Server/AddHost");
+        }
+    </script>
+
+    <!--
+    <script type="text/javascript">
+        $('AddHost').click(function () {
+
+        })
+    </script>
+        -->
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Details</th>
+                <th></th>
+                <th>Server Name</th>
+                <th>Operating System</th>
+                <th>Location</th>
+                <th>Rack</th>
+                <th>USpace</th>
+                <th>IP 1</th>
+                <th>IP 2</th>
+                <th>IP 3</th>
+                <th>Domain</th>
+                <th>RAM(GB)</th>
+                <th>MainBoard</th>
+                <th>CPU</th>
+                <th>#CPUs</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var item in Model._serverList)
+                {
+                    <tr class="clickable">
+                        <td>
+                            <button data-toggle="collapse" data-target=".@item.ServerName" class="btn btn-primary btn-sm btn-block">Virtualization</button>
+                            <button data-toggle="collapse" data-target=".@item._id" class="btn btn-info btn-sm btn-block">Storage</button>
+                        </td>
+                        <td>
+                            <!-- <button class="btn btn-link btn-block" onclick="addVM(@item.ServerName)">Add VM</button>-->
+                            <input type="button" class="btn btn-link btn-block" value="Add VM" onclick="addVM('@item._id','@item.ServerName')" />
+                            <button class="btn btn-link btn-block" onclick="addHDD('@item._id')">Add HDD</button>
+                        </td>
+                        <td contenteditable="true">@item.ServerName</td>
+                        <td contenteditable="true">@item.OperatingSystem</td>
+                        <td contenteditable="true">@item.Location</td>
+                        <td contenteditable="true">@item.Rack</td>
+                        <td contenteditable="true">@item.Uspace</td>
+                        <td contenteditable="true">@item.IP1</td>
+                        <td contenteditable="true">@item.IP2</td>
+                        <td contenteditable="true">@item.IP3</td>
+                        <td contenteditable="true">@item.Domain</td>
+                        <td contenteditable="true">@item.RAM</td>
+                        <td contenteditable="true">@item.MainBoard</td>
+                        <td contenteditable="true">@item.CPU</td>
+                        <td contenteditable="true">@item.NumberOfCPU</td>
+                    </tr>
+
+                    <tr class="collapse @item.ServerName">
+                        <th>VM DETAILS</th>
+                        <th>VM Name</th>
+                        <th>Operating System</th>
+                        <th>Description</th>
+                        <th>IP1</th>
+                        <th>IP2</th>
+                        <th>IP3</th>
+                    </tr>
+                    if (@item.VMs != null)
+                    {
+
+                        foreach (var vm in @item.VMs)
+                        {
+                        <tr class="collapse @item.ServerName">
+                            <td></td>
+                            <td contenteditable="true">@vm.Name</td>
+                            <td contenteditable="true">@vm.OperatingSystem</td>
+                            <td contenteditable="true">@vm.Description</td>
+                            <td contenteditable="true">@vm.IP1</td>
+                            <td contenteditable="true">@vm.IP2</td>
+                            <td contenteditable="true">@vm.IP3</td>
+                        </tr>
+                        }
+                    }
+                    <tr class="collapse @item._id">
+                        <th>HDD Details</th>
+                        <th>Port</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Serial Number</th>
+                    </tr>
+                    if(@item.HardDrives!=null)
+                    { 
+                        foreach (var hdd in @item.HardDrives)
+                        {
+                            <tr class="collapse @item._id">
+                            <td></td>
+                            <td contenteditable="true">@hdd.Port</td>
+                            <td contenteditable="true">@hdd.Type</td>
+                            <td contenteditable="true">@hdd.Size</td>
+                            <td contenteditable="true">@hdd.SerialNumber</td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+
+        </tbody>
+    </table>   
+
+    <script type="text/javascript">
+        function addVM(_serverId,_serverName) {
+            //window.open("http://localhost:53164/Server/AddVM");
+            //document.getElementById('testOutput').innerHTML = _serverName;
+            //document.getElementById('testOutput').innerHTML = 'Just Kidding';
+            //$.post('AddVM', $(namesake).serialize, function (data) { });
+            /*
+            var myData = {
+                _id: _serverId,
+                ServerName: _serverName
+            };
+            
+            var result;
+            $.ajax({
+                type: 'POST',
+                data: myData,
+                url: '/Server/AddVM',
+                success: function (response) {
+                    alert(response);
+                }
+            });            
+           // window.location.href = result;
+           */
+ //           alert(_serverName+" with id "+_serverId);
+            //window.location.href = "AddVM?" + _serverId;
+            var url = '@Url.Action("AddVM","Server", new { _serverId = "_serverId_"})';
+            window.location.href = url.replace('_serverId_',encodeURIComponent(_serverId));
+        }
+        function addHDD(_serverId) {
+            var url = '@Url.Action("AddHDD","Server", new { _serverId = "_serverId_"})';
+            window.location.href = url.replace('_serverId_', encodeURIComponent(_serverId));
+            //window.open("http://localhost:53164/Server/AddHDD");
+        }
+            </script>
+   
+</div>
